@@ -1,0 +1,60 @@
+{
+  "name": "vscode-figma",
+  "displayName": "vscode-figma",
+  "description": "",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.86.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [],
+  "main": "./out/extension.js",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "figma-vscode",
+          "title": "Figma Assets Importer",
+          "icon": "$(heart)"
+        }
+      ]
+    },
+    "views": {
+      "figma-vscode": [
+        {
+          "type": "webview",
+          "id": "figma.importer.view",
+          "name": "Figma vscode",
+          "contextualTitle": "Figma Vscode"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "dev": "cd web && yarn start",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.6",
+    "@types/node": "18.x",
+    "@types/vscode": "^1.86.0",
+    "@types/vscode-webview": "^1.57.5",
+    "@typescript-eslint/eslint-plugin": "^7.0.2",
+    "@typescript-eslint/parser": "^7.0.2",
+    "@vscode/test-cli": "^0.0.6",
+    "@vscode/test-electron": "^2.3.9",
+    "eslint": "^8.56.0",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "vscode-messenger": "^0.4.5",
+    "vscode-messenger-webview": "^0.4.5"
+  }
+}
