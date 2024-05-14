@@ -4,3 +4,9 @@ node_modules
 .vscode-test/
 *.vsix
 web/.parcel-cache
+test-workspace/**/*.svg
+test-workspace/**/*.png
+test-workspace/**/*.jpeg
+test-workspace/**/*.jpg
+test-workspace/**/*.js
+test-workspace/**/*.js.map

@@ -7,6 +7,16 @@ const DEFAULT_OPTIONS: MessageParticipant = {
   type: "extension",
   extensionId: EXTENSION_ID,
 };
+
+export interface ExportParams {
+  page: string;
+  fileId: string;
+  format: string;
+  path: string;
+  token: string;
+  assets: any[];
+}
+
 export const useMessengerActions = (_messenger?: MessengerAPI) => {
   const store = useStoreContext();
   const messenger = _messenger || store.messenger;
@@ -50,10 +60,22 @@ export const useMessengerActions = (_messenger?: MessengerAPI) => {
     );
   }, [messenger]);
 
+  const exportAssets = useCallback(
+    async (params: ExportParams) => {
+      return await messenger?.sendRequest(
+        NOTIFICATION_TYPES["exportAssets"],
+        DEFAULT_OPTIONS,
+        params
+      );
+    },
+    [messenger]
+  );
+
   return {
     setToken,
     getToken,
     toast,
     error,
+    exportAssets,
   };
 };
