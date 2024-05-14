@@ -24,6 +24,7 @@ export class Figma {
       fileId: config.fileId,
       page: config.page,
       assetsPath: ".",
+      format: config.format.toLowerCase(),
     });
     this.config = config;
   }
@@ -59,13 +60,14 @@ export class Figma {
     });
   }
   public async exportAssets(assets: any[]) {
-    console.log("Exporting assets", assets.length);
-    const exportedAssets = await this.client.exportAssets(assets);
-    console.log(exportedAssets);
-    console.log("Saving assets");
+    const exportedAssets = await this.client.exportAssets(
+      assets,
+      this.config.format.toLocaleLowerCase()
+    );
     exportedAssets.map(async (asset, index) => {
       await this.saveFile(asset, index);
     });
     await Promise.all(exportedAssets);
+    return true;
   }
 }

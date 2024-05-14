@@ -34,9 +34,10 @@ export class MessengerProvider {
     this.messenger.onRequest(
       NOTIFICATION_TYPES["exportAssets"],
       async ({ assets, ...config }: FigmaConfig) => {
-        console.log("Recieved the event");
         const figma = new Figma(config);
-        figma.exportAssets(assets!);
+        await figma.exportAssets(assets!);
+        window.showInformationMessage("Your assets have been exported!");
+        return true;
       }
     );
     this.messenger.onNotification(

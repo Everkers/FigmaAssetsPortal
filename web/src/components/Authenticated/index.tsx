@@ -7,6 +7,7 @@ import { AssetsList } from "../UnAuthenticated/AssetsList";
 import { useFigma } from "../../hooks/useFigma";
 import { useMemo, useState } from "react";
 import { useStoreContext } from "../../store";
+import { useMessengerActions } from "../../hooks/useMessengerActions";
 
 const CheckBox = () => {
   const form = useForm();
@@ -33,14 +34,22 @@ export const AuthenticatedUser: React.FC<{}> = () => {
   const { searchForAssets, exportAssets } = useFigma();
   const [searchResults, setSearchResults] = useState<any>();
   const [selectedAssets, setSelectedAssets] = useState<Record<string, any>>({});
+  const [status, setStatus] = useState<string>();
+  const { error, toast } = useMessengerActions();
   const { token } = useStoreContext();
 
   const onSubmit = async (values: FormValues) => {
+    setStatus("searching");
     const data = await searchForAssets({
       assetsRegex: values.assetRegex,
       containerName: values.containerName,
       page: values.pageName,
     });
+
+    setStatus("idle");
+    if (!data.length) {
+      toast("No assets found!");
+    }
     setSearchResults(data);
   };
 
@@ -49,16 +58,22 @@ export const AuthenticatedUser: React.FC<{}> = () => {
     [selectedAssets]
   );
 
-  const handleExportAssets = (values: FormValues) => {
+  const handleExportAssets = async (values: FormValues) => {
+    setStatus("exporting");
     const assets = selectsCount ? Object.values(selectedAssets) : searchResults;
-    exportAssets({
+    await exportAssets({
       fileId: "pbN8Lkhra1IEMgFA0nRoQf",
       format: values.exportFormat,
       path: values.exportPath,
       token: token!,
       assets,
       page: values.pageName,
+    }).catch((err) => {
+      setStatus("idle");
+      console.error(err);
+      error("Something went wrong while exporing your assets!");
     });
+    setStatus("idle");
   };
   return (
     <div className="h-screen flex flex-col">
@@ -214,15 +229,31 @@ export const AuthenticatedUser: React.FC<{}> = () => {
                   </div>
                 </div>
                 <div className="mt-2 space-y-2">
-                  <VSCodeButton type="submit" className="w-full">
-                    Search for assets
+                  <VSCodeButton
+                    disabled={status === "searching"}
+                    type="submit"
+                    className="w-full"
+                  >
+                    {status === "searching"
+                      ? "Searching..."
+                      : "Search for assets"}
                   </VSCodeButton>
                   <VSCodeButton
                     onClick={() => handleExportAssets(values)}
                     className="w-full"
+                    disabled={
+                      status === "exporting" ||
+                      (!searchResults?.length && !selectsCount)
+                    }
                     appearance="secondary"
                   >
-                    {selectsCount ? `Export ${selectsCount}` : "Export All"}
+                    {status === "exporting" ? (
+                      "Exporting..."
+                    ) : (
+                      <>
+                        {selectsCount ? `Export ${selectsCount}` : "Export All"}
+                      </>
+                    )}
                   </VSCodeButton>
                 </div>
               </form>

@@ -55,7 +55,7 @@ export const useFigma = () => {
   };
 
   const exportAssets = async (params: ExportParams) => {
-    _exportAssets(params);
+    return await _exportAssets(params);
   };
   return { searchForAssets, exportAssets };
 };
