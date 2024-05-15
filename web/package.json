@@ -52,6 +52,7 @@
   },
   "devDependencies": {
     "buffer": "^6.0.3",
+    "esbuild": "^0.21.2",
     "parcel": "^2.11.0",
     "postcss": "^8.4.35",
     "process": "^0.11.10",
