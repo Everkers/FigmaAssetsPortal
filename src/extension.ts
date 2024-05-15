@@ -23,7 +23,7 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 class CustomViewProvider implements vscode.WebviewViewProvider {
-  public static readonly viewType = "figma.importer.view";
+  public static readonly viewType = "assets-portal-figma";
 
   private _view?: vscode.WebviewView;
   private messenger: Messenger;

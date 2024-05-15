@@ -1,7 +1,7 @@
 {
-  "name": "vscode-figma",
-  "displayName": "vscode-figma",
-  "description": "",
+  "name": "assets-portal-figma",
+  "displayName": "assets-portal-figma",
+  "description": "A magical Figma portal that can transport assets directly into your VS Code.",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.86.0"
@@ -15,19 +15,19 @@
     "viewsContainers": {
       "activitybar": [
         {
-          "id": "figma-vscode",
-          "title": "Figma Assets Importer",
-          "icon": "$(heart)"
+          "id": "assets-portal-figma",
+          "title": "Figma Assets Portal",
+          "icon": "media/icon.svg"
         }
       ]
     },
     "views": {
-      "figma-vscode": [
+      "assets-portal-figma": [
         {
           "type": "webview",
-          "id": "figma.importer.view",
-          "name": "Figma vscode",
-          "contextualTitle": "Figma Vscode"
+          "id": "assets-portal-figma",
+          "name": "Portal",
+          "contextualTitle": "Portal"
         }
       ]
     }

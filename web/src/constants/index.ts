@@ -32,7 +32,7 @@ export const NOTIFICATION_TYPES: Record<Types, NotificationType<string>> = {
   },
 };
 
-export const EXTENSION_ID = "figma.importer.view";
+export const EXTENSION_ID = "assets-portal-figma";
 
 export const EXPORT_FORMATS = [
   {
