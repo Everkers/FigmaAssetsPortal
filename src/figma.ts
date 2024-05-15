@@ -12,7 +12,7 @@ export interface FigmaConfig {
   format: string;
   path: string;
   token: string;
-  assets?: any[];
+  scale: number;
 }
 export class Figma {
   private client: FigmaExporter;
@@ -62,7 +62,8 @@ export class Figma {
   public async exportAssets(assets: any[]) {
     const exportedAssets = await this.client.exportAssets(
       assets,
-      this.config.format.toLocaleLowerCase()
+      this.config.format.toLocaleLowerCase(),
+      this.config.scale
     );
     exportedAssets.map(async (asset, index) => {
       await this.saveFile(asset, index);

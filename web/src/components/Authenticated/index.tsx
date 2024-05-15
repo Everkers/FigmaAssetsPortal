@@ -5,9 +5,10 @@ import { TopBar } from "./TopBar";
 import { Field, Form, useForm, useFormState } from "react-final-form";
 import { AssetsList } from "../UnAuthenticated/AssetsList";
 import { useFigma } from "../../hooks/useFigma";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useStoreContext } from "../../store";
 import { useMessengerActions } from "../../hooks/useMessengerActions";
+import { EXPORT_FORMATS, SCALES } from "../../constants";
 
 const CheckBox = () => {
   const form = useForm();
@@ -35,7 +36,19 @@ export const AuthenticatedUser: React.FC<{}> = () => {
   const [searchResults, setSearchResults] = useState<any>();
   const [selectedAssets, setSelectedAssets] = useState<Record<string, any>>({});
   const [status, setStatus] = useState<string>();
-  const { error, toast } = useMessengerActions();
+  const { error, toast, preserveConfig, getPreservedConfig } =
+    useMessengerActions();
+
+  const [intialValues, setInitialValues] = useState<FormValues>({
+    isAssetsContainerExport: true,
+    assetRegex: "",
+    containerName: "",
+    exportFormat: "SVG",
+    exportPath: "src",
+    exportScale: "1",
+    pageName: "Page 1",
+  });
+
   const { token } = useStoreContext();
 
   const onSubmit = async (values: FormValues) => {
@@ -45,8 +58,8 @@ export const AuthenticatedUser: React.FC<{}> = () => {
       containerName: values.containerName,
       page: values.pageName,
     });
-
     setStatus("idle");
+    preserveConfig(values);
     if (!data.length) {
       toast("No assets found!");
     }
@@ -62,12 +75,15 @@ export const AuthenticatedUser: React.FC<{}> = () => {
     setStatus("exporting");
     const assets = selectsCount ? Object.values(selectedAssets) : searchResults;
     await exportAssets({
-      fileId: "pbN8Lkhra1IEMgFA0nRoQf",
-      format: values.exportFormat,
-      path: values.exportPath,
-      token: token!,
+      config: {
+        fileId: "pbN8Lkhra1IEMgFA0nRoQf",
+        format: values.exportFormat,
+        path: values.exportPath,
+        token: token!,
+        page: values.pageName,
+        scale: +values.exportScale,
+      },
       assets,
-      page: values.pageName,
     }).catch((err) => {
       setStatus("idle");
       console.error(err);
@@ -75,20 +91,19 @@ export const AuthenticatedUser: React.FC<{}> = () => {
     });
     setStatus("idle");
   };
+
+  useEffect(() => {
+    (async () => {
+      const config = await getPreservedConfig();
+      if (config) setInitialValues(config);
+    })();
+  }, [getPreservedConfig, setInitialValues]);
   return (
     <div className="h-screen flex flex-col">
       <TopBar />
       <div className="flex-1">
         <Form<FormValues>
-          initialValues={{
-            isAssetsContainerExport: true,
-            assetRegex: "",
-            containerName: "",
-            exportFormat: "SVG",
-            exportPath: "src",
-            exportScale: "1",
-            pageName: "Page 1",
-          }}
+          initialValues={intialValues}
           onSubmit={onSubmit}
           subscription={{ values: true }}
           render={({ handleSubmit, values }) => {
@@ -134,21 +149,7 @@ export const AuthenticatedUser: React.FC<{}> = () => {
                         <FormSelect
                           label="Export Format"
                           value={values.exportFormat}
-                          items={[
-                            {
-                              value: "PNG",
-                              label: "PNG",
-                            },
-                            {
-                              value: "SVG",
-                              label: "SVG",
-                              checked: true,
-                            },
-                            {
-                              value: "JPEG",
-                              label: "JPEG",
-                            },
-                          ]}
+                          items={EXPORT_FORMATS}
                           onChange={(e: any) => {
                             input.onChange(e);
                           }}
@@ -164,20 +165,7 @@ export const AuthenticatedUser: React.FC<{}> = () => {
                         <FormSelect
                           label="Export Scale"
                           value={values.exportScale}
-                          items={[
-                            {
-                              value: "1",
-                              label: "1",
-                            },
-                            {
-                              value: "2",
-                              label: "2",
-                            },
-                            {
-                              value: "3",
-                              label: "3",
-                            },
-                          ]}
+                          items={SCALES}
                           onChange={(e: any) => {
                             input.onChange(e);
                           }}
@@ -214,8 +202,8 @@ export const AuthenticatedUser: React.FC<{}> = () => {
                           return (
                             <FormField
                               {...input}
-                              label="Search with regex"
-                              info="Extract all the assets that matches with your regex."
+                              label="Search"
+                              info="You can use regex to use filter the assets."
                               placeholder="/Icon\/\w+/g"
                               onInput={input.onChange}
                               error={
@@ -281,7 +269,7 @@ const composeValidators =
     return errors.length > 0 ? errors[0] : undefined;
   };
 
-type FormValues = {
+export type FormValues = {
   pageName: string;
   exportPath: string;
   exportFormat: string;

@@ -33,7 +33,7 @@ export class MessengerProvider {
 
     this.messenger.onRequest(
       NOTIFICATION_TYPES["exportAssets"],
-      async ({ assets, ...config }: FigmaConfig) => {
+      async ({ assets, config }: { assets: any[]; config: FigmaConfig }) => {
         const figma = new Figma(config);
         await figma.exportAssets(assets!);
         window.showInformationMessage("Your assets have been exported!");
@@ -46,6 +46,22 @@ export class MessengerProvider {
         window.showInformationMessage(message);
       }
     );
+
+    this.messenger.onRequest(
+      NOTIFICATION_TYPES["preserveConfig"],
+      async (config: any) => {
+        await this.context.globalState.update("config", config);
+        return config;
+      }
+    );
+    this.messenger.onRequest(
+      NOTIFICATION_TYPES["getPreservedConfig"],
+      async () => {
+        const config = await this.context.globalState.get("config");
+        return config;
+      }
+    );
+
     this.messenger.onNotification(
       NOTIFICATION_TYPES["error"],
       (message: string) => {

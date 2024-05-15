@@ -2,6 +2,7 @@ import { useCallback } from "react";
 import { EXTENSION_ID, NOTIFICATION_TYPES } from "../constants";
 import type { MessageParticipant, MessengerAPI } from "vscode-messenger-common";
 import { useStoreContext } from "../store";
+import { FormValues } from "../components/Authenticated";
 
 const DEFAULT_OPTIONS: MessageParticipant = {
   type: "extension",
@@ -9,11 +10,14 @@ const DEFAULT_OPTIONS: MessageParticipant = {
 };
 
 export interface ExportParams {
-  page: string;
-  fileId: string;
-  format: string;
-  path: string;
-  token: string;
+  config: {
+    page: string;
+    fileId: string;
+    format: string;
+    path: string;
+    token: string;
+    scale: number;
+  };
   assets: any[];
 }
 
@@ -60,6 +64,24 @@ export const useMessengerActions = (_messenger?: MessengerAPI) => {
     );
   }, [messenger]);
 
+  const preserveConfig = useCallback(
+    async (config: FormValues) => {
+      return await messenger?.sendRequest<FormValues, FormValues>(
+        NOTIFICATION_TYPES["preserveConfig"],
+        DEFAULT_OPTIONS,
+        config
+      );
+    },
+    [messenger]
+  );
+
+  const getPreservedConfig = useCallback(async () => {
+    return await messenger?.sendRequest<FormValues, FormValues>(
+      NOTIFICATION_TYPES["getPreservedConfig"],
+      DEFAULT_OPTIONS
+    );
+  }, [messenger]);
+
   const exportAssets = useCallback(
     async (params: ExportParams) => {
       return await messenger?.sendRequest(
@@ -77,5 +99,7 @@ export const useMessengerActions = (_messenger?: MessengerAPI) => {
     toast,
     error,
     exportAssets,
+    getPreservedConfig,
+    preserveConfig,
   };
 };

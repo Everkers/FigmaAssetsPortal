@@ -1,6 +1,13 @@
 import type { NotificationType } from "vscode-messenger-common";
 
-type Types = "toast" | "setToken" | "getToken" | "error" | "exportAssets";
+type Types =
+  | "toast"
+  | "setToken"
+  | "getToken"
+  | "error"
+  | "exportAssets"
+  | "preserveConfig"
+  | "getPreservedConfig";
 export const NOTIFICATION_TYPES: Record<Types, NotificationType<string>> = {
   toast: {
     method: "toast",
@@ -16,6 +23,12 @@ export const NOTIFICATION_TYPES: Record<Types, NotificationType<string>> = {
   },
   exportAssets: {
     method: "exportAssets",
+  },
+  preserveConfig: {
+    method: "preserveConfig",
+  },
+  getPreservedConfig: {
+    method: "getPreservedConfig",
   },
 };
 

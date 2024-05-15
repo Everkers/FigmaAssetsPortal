@@ -29,7 +29,12 @@ export const useFigma = () => {
       if ("children" in node) {
         frontier.push(...node.children);
       }
-      if (containerName && !regex && node.name === containerName) {
+      if (
+        containerName &&
+        !regex &&
+        node.name === containerName &&
+        node.children?.length
+      ) {
         yield node.children;
       } else if (!containerName && regex && regex.test(node.name)) {
         yield node;
