@@ -50,12 +50,6 @@ class CustomViewProvider implements vscode.WebviewViewProvider {
 
     this.messenger.registerWebviewView(webviewView);
     webviewView.webview.html = this._getHtmlForWebview(webviewView.webview);
-
-    // const storage = new Storage(this.context, webviewView.webview);
-    // const figmaClient = new FigmaClient(this.context, webviewView.webview);
-
-    // storage.invokeWebViewListeners();
-    // figmaClient.invokeWebViewListeners();
   }
 
   private _getHtmlForWebview(webview: vscode.Webview) {

@@ -49,7 +49,7 @@ export const AssetsList: React.FC<AssetsListProps> = ({
                 })
               }
               key={item.id}
-              className="border border-border-color py-2 px-3 rounded-md"
+              className="border-solid border border-border-color py-2 px-3 rounded-md"
             >
               <div className="flex items-center">
                 <VSCodeBadge>{item.type}</VSCodeBadge>

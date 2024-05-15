@@ -6,7 +6,7 @@ import { ContextProvider, useStoreContext } from "./store";
 const AppConsumer: React.FC<{}> = () => {
   const { token, status } = useStoreContext();
   return (
-    <div className="px-5">
+    <div>
       {status === "loading" ? (
         <VSCodeProgressRing className="mx-auto my-10" />
       ) : (

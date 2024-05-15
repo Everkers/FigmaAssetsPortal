@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+*,
+:before,
+:after {
+  box-sizing: border-box;
+  border: unnset;
+}
 body {
   @apply p-0;
 }

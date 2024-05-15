@@ -20,26 +20,28 @@ export const UnAuthenticatedUser: React.FC<{}> = () => {
   const handleSetToken = async () => {
     try {
       setLoading(true);
-      await getFigmaUser(token);
+      const user = await getFigmaUser(token);
       const t = (await addToken(token)) as string;
       dispatch!({
         payload: t,
         type: "setToken",
       });
       setLoading(false);
-      toast("You are succesfully authenticated!");
+      toast(`Authenticated as ${user.data.handle}. Welcome!`);
     } catch (err) {
       setLoading(false);
-      error("Your Figma API token is invalid or expired!");
+      error(
+        "Your Figma API token has expired or lacks the necessary permissions for accessing files."
+      );
     }
   };
 
   return (
-    <div>
+    <div className="px-5">
       <div className="mb-2">
-        <h1>Authenticate</h1>
+        <h1>Account Authentication</h1>
         <p className="opacity-70 text-xs -mt-px">
-          Use your figma token to get started, learn how to generate a token{" "}
+          Get started by using your Figma token. Learn how to generate a token{" "}
           <VSCodeLink href="https://www.figma.com/developers/api#access-tokens">
             here
           </VSCodeLink>

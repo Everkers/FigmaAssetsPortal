@@ -45,14 +45,16 @@ export const useFigma = () => {
   const searchForAssets = async ({
     containerName,
     assetsRegex,
+    fileId,
     page,
   }: {
     containerName: string | undefined;
     assetsRegex: string | undefined;
+    fileId: string;
     page: string;
   }) => {
     const regex = assetsRegex ? RegexParser(assetsRegex) : undefined;
-    const file = await figmaAPIClient.file("pbN8Lkhra1IEMgFA0nRoQf");
+    const file = await figmaAPIClient.file(fileId);
     const nodes = Array.from(
       walkNodes(file.data.document, containerName, regex, page)
     );
