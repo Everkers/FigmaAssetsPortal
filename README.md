@@ -1,3 +1,5 @@
+[![](https://img.shields.io/visual-studio-marketplace/v/everkers.assets-portal-figma)](https://marketplace.visualstudio.com/items?itemName=everkers.assets-portal-figma) ![install](https://img.shields.io/visual-studio-marketplace/i/everkers.assets-portal-figma)
+
 # Figma Assets Portal
 
 A magical Figma portal that can transport assets directly into your VS Code.
@@ -50,7 +52,7 @@ npm start
 
 Now you can start developing by pressing `Ctrl + F5` or through the commands palette by using`Ctrl + Shift + P` shortcut and chosing `Start Debugging`.
 
-> Tip: You don't have to restat the project to see new changes, you can do so just by closing the webview tab and reopen it.
+> Tip: You don't have to restart the project to see new changes, you can do so just by closing the webview tab and reopen it.
 
 ## Changelog
 
