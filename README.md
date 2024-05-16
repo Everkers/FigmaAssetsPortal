@@ -2,14 +2,9 @@
 
 # Figma Assets Portal
 
-  <iframe
-    src="https://play.fastmotion.io/53f34463-054f-45ac-91a1-8f57eec0e0a2?autoplay=true&loop=false&muted=false&preload=true"
-    loading="lazy"
-   width="100%" 
-   height="500px"
-    allow="accelerometer;gyroscope;autoplay;encrypted-media;picture-in-picture;"
-    allowfullscreen="true"
-  ></iframe>
+<video width="100%" height="800" controls>
+  <source src="demo/extension-demo.mp4" type="video/mp4">
+</video>
 
 A magical Figma portal that can transport assets directly into your VS Code.
 
