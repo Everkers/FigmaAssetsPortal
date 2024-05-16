@@ -2,7 +2,7 @@
   "name": "assets-portal-figma",
   "displayName": "Figma Assets Portal",
   "description": "A magical Figma portal that can transport assets directly into your VS Code.",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "icon": "media/logo.png",
   "engines": {
     "vscode": "^1.86.0"
