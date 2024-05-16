@@ -7,18 +7,12 @@ A magical Figma portal that can transport assets directly into your VS Code.
 
 ## Features
 
-
-
-
 - Ability to use all the default Figma export features.
 - Flexible assets filtering options.
 - Ability to export all the assets within a Figma container, either a frame or group.
 - Ability to easily export assets with a naming convention using regex.
 - Preserved configuration.
 - Ability to specify the export path; if the folder doesn't exist, it will be automatic
-
-
-ally created.
 
 ## Usage
 
