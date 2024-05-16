@@ -1,21 +1,24 @@
 [![](https://img.shields.io/visual-studio-marketplace/v/everkers.assets-portal-figma)](https://marketplace.visualstudio.com/items?itemName=everkers.assets-portal-figma) ![install](https://img.shields.io/visual-studio-marketplace/i/everkers.assets-portal-figma)
 
 # Figma Assets Portal
-
-<video width="100%" height="600" controls>
-  <source src="https://pouch.jumpshare.com/preview/nm5Yve1xGjs_fT7C0TlEDHEa9nFR2giFOde8P2hFcAu3VeFS9k-2mDZZQth77wliYEeKEWDOd146eK9dHd0JYcPUOJlrVH1PRo2msBMU00WNlx8onS_sfzVdmnnaMNgvGlDQHs_a_wSXN-hLxaGy826yjbN-I2pg_cnoHs_AmgI.mp4" type="video/mp4">
-</video>
-
+<div><video controls src="https://github.com/Everkers/FigmaAssetsPortal/assets/44750827/ce257229-ac3d-4ba2-a41a-d2f710ff1ba0
+" muted="false"></video></div>
 A magical Figma portal that can transport assets directly into your VS Code.
 
 ## Features
+
+
+
 
 - Ability to use all the default Figma export features.
 - Flexible assets filtering options.
 - Ability to export all the assets within a Figma container, either a frame or group.
 - Ability to easily export assets with a naming convention using regex.
 - Preserved configuration.
-- Ability to specify the export path; if the folder doesn't exist, it will be automatically created.
+- Ability to specify the export path; if the folder doesn't exist, it will be automatic
+
+
+ally created.
 
 ## Usage
 
