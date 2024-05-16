@@ -15,6 +15,7 @@
     "figma-export-assets": "^1.0.4",
     "figma-js": "^1.16.1-0",
     "final-form": "^4.20.10",
+    "final-form-set-field-touched": "^1.0.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-final-form": "^6.5.9",
@@ -51,6 +52,7 @@
     ]
   },
   "devDependencies": {
+    "@types/final-form-set-field-touched": "^1.0.3",
     "buffer": "^6.0.3",
     "esbuild": "^0.21.2",
     "parcel": "^2.11.0",

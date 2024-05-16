@@ -13,6 +13,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useStoreContext } from "../../store";
 import { useMessengerActions } from "../../hooks/useMessengerActions";
 import { EXPORT_FORMATS, SCALES } from "../../constants";
+import setFieldTouched from "final-form-set-field-touched";
 
 const CheckBox = () => {
   const form = useForm();
@@ -48,9 +49,9 @@ export const AuthenticatedUser: React.FC<{}> = () => {
     assetRegex: "",
     containerName: "",
     exportFormat: "SVG",
-    exportPath: "src",
+    exportPath: "",
     exportScale: "1",
-    pageName: "Page 1",
+    pageName: "",
     fileId: "",
   });
 
@@ -120,15 +121,19 @@ export const AuthenticatedUser: React.FC<{}> = () => {
   }, [getPreservedConfig, setInitialValues]);
   return (
     <div className="h-screen px-5 relative flex flex-col">
-      <TopBar />
       <div className="flex-1">
         <Form<FormValues>
           initialValues={intialValues}
           onSubmit={onSubmit}
+          mutators={{
+            //@ts-expect-error
+            setFieldTouched,
+          }}
           subscription={{ values: true }}
           render={({ handleSubmit, values }) => {
             return (
               <>
+                <TopBar />
                 <Field
                   validate={composeValidators(required)}
                   name="fileId"

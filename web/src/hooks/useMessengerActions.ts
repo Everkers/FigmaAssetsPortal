@@ -65,8 +65,8 @@ export const useMessengerActions = (_messenger?: MessengerAPI) => {
   }, [messenger]);
 
   const preserveConfig = useCallback(
-    async (config: FormValues) => {
-      return await messenger?.sendRequest<FormValues, FormValues>(
+    async (config: FormValues | null) => {
+      return await messenger?.sendRequest<FormValues | null, FormValues | null>(
         NOTIFICATION_TYPES["preserveConfig"],
         DEFAULT_OPTIONS,
         config
