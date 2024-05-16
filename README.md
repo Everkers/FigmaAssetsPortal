@@ -2,8 +2,8 @@
 
 # Figma Assets Portal
 
-<video width="100%" height="800" controls>
-  <source src="demo/extension-demo.mp4" type="video/mp4">
+<video width="100%" height="600" controls>
+  <source src="https://pouch.jumpshare.com/preview/nm5Yve1xGjs_fT7C0TlEDHEa9nFR2giFOde8P2hFcAu3VeFS9k-2mDZZQth77wliYEeKEWDOd146eK9dHd0JYcPUOJlrVH1PRo2msBMU00WNlx8onS_sfzVdmnnaMNgvGlDQHs_a_wSXN-hLxaGy826yjbN-I2pg_cnoHs_AmgI.mp4" type="video/mp4">
 </video>
 
 A magical Figma portal that can transport assets directly into your VS Code.
