@@ -18,8 +18,8 @@ export const TopBar: React.FC<TopBarProps> = () => {
 
   const handleClearForm = () => {
     preserveConfig(null);
-    form.reset();
     Object.keys(form.getState().values || {}).forEach((field) => {
+      form.change(field, "");
       form.mutators.setFieldTouched(field, false);
     });
   };
