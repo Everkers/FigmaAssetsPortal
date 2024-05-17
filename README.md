@@ -1,5 +1,6 @@
 [![](https://img.shields.io/visual-studio-marketplace/v/everkers.assets-portal-figma)](https://marketplace.visualstudio.com/items?itemName=everkers.assets-portal-figma) ![install](https://img.shields.io/visual-studio-marketplace/i/everkers.assets-portal-figma)
 
+<a href="https://www.producthunt.com/posts/figma-assets-portal?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-figma&#0045;assets&#0045;portal" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=457822&theme=light" alt="Figma&#0032;Assets&#0032;Portal - A&#0032;VS&#0032;Code&#0032;extension&#0032;that&#0032;can&#0032;easily&#0032;import&#0032;Figma&#0032;assets&#0033; | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a>
 # Figma Assets Portal
 <div><video controls src="https://github.com/Everkers/FigmaAssetsPortal/assets/44750827/ce257229-ac3d-4ba2-a41a-d2f710ff1ba0
 " muted="false"></video></div>
