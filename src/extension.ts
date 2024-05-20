@@ -2,6 +2,7 @@ import * as vscode from "vscode";
 import { Messenger } from "vscode-messenger";
 import { MessengerProvider } from "./messenger";
 import { EXTENSION_ID } from "./constants";
+import { AssetsSearch } from "./searchCommand";
 export function activate(context: vscode.ExtensionContext) {
   const messenger = new Messenger({ debugLog: true });
   const outputChannel = vscode.window.createOutputChannel(EXTENSION_ID);
@@ -17,7 +18,10 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.window.registerWebviewViewProvider(
       CustomViewProvider.viewType,
       provider
-    )
+    ),
+    vscode.commands.registerCommand("figma.quickpick", () => {
+      new AssetsSearch(context).init();
+    })
   );
   messengerProvider.invokeListeners();
 }

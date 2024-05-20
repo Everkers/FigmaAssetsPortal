@@ -2,10 +2,10 @@
   "name": "assets-portal-figma",
   "displayName": "Figma Assets Portal",
   "description": "A magical Figma portal that can transport assets directly into your VS Code.",
-  "version": "0.0.3",
+  "version": "0.0.5",
   "icon": "media/logo.png",
   "engines": {
-    "vscode": "^1.86.0"
+    "vscode": "^1.80.0"
   },
   "repository": {
     "type": "git",
@@ -15,9 +15,15 @@
   "categories": [
     "Other"
   ],
+  "main": "./out/extension.js",
   "activationEvents": [],
-  "main": "./dist/extension.js",
   "contributes": {
+    "commands": [
+      {
+        "command": "figma.quickpick",
+        "title": "Quick Import Figma Asset"
+      }
+    ],
     "viewsContainers": {
       "activitybar": [
         {
@@ -53,12 +59,13 @@
   "devDependencies": {
     "@types/mocha": "^10.0.6",
     "@types/node": "18.x",
-    "@types/vscode": "^1.86.0",
+    "@types/vscode": "^1.80.0",
     "@types/vscode-webview": "^1.57.5",
     "@typescript-eslint/eslint-plugin": "^7.0.2",
     "@typescript-eslint/parser": "^7.0.2",
     "@vscode/test-cli": "^0.0.6",
     "@vscode/test-electron": "^2.3.9",
+    "esbuild": "^0.21.3",
     "eslint": "^8.56.0",
     "typescript": "^5.3.3"
   },
@@ -66,6 +73,7 @@
     "axios": "^1.6.8",
     "cosmiconfig": "^8.2.0",
     "figma-export-assets": "^1.0.4",
+    "figma-js": "^1.16.1-0",
     "mkdirp": "^3.0.1",
     "vscode-messenger": "^0.4.5",
     "vscode-messenger-webview": "^0.4.5"

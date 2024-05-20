@@ -2,10 +2,11 @@ import { Messenger } from "vscode-messenger";
 import { NOTIFICATION_TYPES } from "./constants";
 import { ExtensionContext, OutputChannel, window } from "vscode";
 import { Figma, FigmaConfig } from "./figma";
+import { Services } from "./services";
 
-export class MessengerProvider {
+export class MessengerProvider extends Services {
   private messenger: Messenger;
-  private context: ExtensionContext;
+  public context: ExtensionContext;
   private outputChannel: OutputChannel;
 
   constructor(
@@ -13,10 +14,13 @@ export class MessengerProvider {
     context: ExtensionContext,
     outputChannel: OutputChannel
   ) {
+    super(context);
+
     this.messenger = messenger;
     this.context = context;
     this.outputChannel = outputChannel;
   }
+
   public invokeListeners() {
     this.messenger.onRequest(NOTIFICATION_TYPES["getToken"], async () => {
       const token = await this.context.globalState.get("token");
@@ -56,10 +60,7 @@ export class MessengerProvider {
     );
     this.messenger.onRequest(
       NOTIFICATION_TYPES["getPreservedConfig"],
-      async () => {
-        const config = await this.context.globalState.get("config");
-        return config;
-      }
+      async () => this.getPreservedConfig()
     );
 
     this.messenger.onNotification(
