@@ -20,8 +20,8 @@
   "contributes": {
     "commands": [
       {
-        "command": "figma.quickpick",
-        "title": "Quick Import Figma Asset"
+        "command": "assets-portal-figma.quickexport",
+        "title": "Import Figma Asset"
       }
     ],
     "viewsContainers": {

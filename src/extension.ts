@@ -19,7 +19,7 @@ export function activate(context: vscode.ExtensionContext) {
       CustomViewProvider.viewType,
       provider
     ),
-    vscode.commands.registerCommand("figma.quickpick", () => {
+    vscode.commands.registerCommand(`${EXTENSION_ID}.quickexport`, () => {
       new AssetsSearch(context).init();
     })
   );
@@ -27,7 +27,7 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 class CustomViewProvider implements vscode.WebviewViewProvider {
-  public static readonly viewType = "assets-portal-figma";
+  public static readonly viewType = EXTENSION_ID;
 
   private _view?: vscode.WebviewView;
   private messenger: Messenger;
