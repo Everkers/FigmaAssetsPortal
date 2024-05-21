@@ -21,7 +21,9 @@ export const useFigma = () => {
     regex: RegExp | undefined,
     page: string
   ) {
-    const pageChilds = root.children.find((item: any) => item.name === page);
+    const pageChilds = root.children.find(
+      (item: any) => item.name.toLowerCase() === page.trim().toLowerCase()
+    );
     if (!pageChilds) return;
     const frontier: any[] = [pageChilds];
     while (frontier.length > 0) {
@@ -32,7 +34,7 @@ export const useFigma = () => {
       if (
         containerName &&
         !regex &&
-        node.name === containerName &&
+        node.name.toLowerCase() === containerName.trim().toLowerCase() &&
         node.children?.length
       ) {
         yield node.children;

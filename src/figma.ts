@@ -5,7 +5,7 @@ import axios from "axios";
 import * as FigmaWrapper from "figma-js";
 
 import { mkdirp } from "mkdirp";
-import { workspace } from "vscode";
+import { window, workspace } from "vscode";
 
 export interface FigmaConfig {
   page: string;
@@ -32,7 +32,8 @@ export class Figma {
 
   private *walkNodes(root: any, value: string) {
     const pageChilds = root.children.find(
-      (item: any) => item.name === this.config.page
+      (item: any) =>
+        item.name.toLowerCase() === this.config.page.trim().toLowerCase()
     );
     if (!pageChilds) {
       return;
@@ -87,15 +88,20 @@ export class Figma {
     });
   }
   public async exportAssets(assets: any[], format?: string, path?: string) {
-    const exportedAssets = await this.client.exportAssets(
-      assets,
-      format?.toLowerCase() || this.config.format.toLowerCase(),
-      this.config.scale
-    );
-    exportedAssets.map(async (asset, index) => {
-      await this.saveFile(asset, index, path);
-    });
-    await Promise.all(exportedAssets);
-    return true;
+    try {
+      const exportedAssets = await this.client.exportAssets(
+        assets,
+        format?.toLowerCase() || this.config.format.toLowerCase() || "SVG",
+        this.config.scale || 1
+      );
+
+      exportedAssets.map(async (asset, index) => {
+        await this.saveFile(asset, index, path);
+      });
+      await Promise.all(exportedAssets);
+      return true;
+    } catch (err) {
+      throw err;
+    }
   }
 }

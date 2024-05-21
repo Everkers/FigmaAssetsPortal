@@ -14,6 +14,7 @@ import { useStoreContext } from "../../store";
 import { useMessengerActions } from "../../hooks/useMessengerActions";
 import { EXPORT_FORMATS, SCALES } from "../../constants";
 import setFieldTouched from "final-form-set-field-touched";
+import useDebounce from "../../hooks/useDebounce";
 
 const CheckBox = () => {
   const form = useForm();
@@ -36,13 +37,32 @@ const CheckBox = () => {
   );
 };
 
+export const CacheForm: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
+  const { preserveConfig } = useMessengerActions();
+  const formState = useFormState<FormValues>({
+    subscription: { values: true, dirty: true },
+  });
+
+  const debouncedValue = useDebounce(formState.values, 300);
+
+  useEffect(() => {
+    (async () => {
+      if (formState.dirty) {
+        await preserveConfig(debouncedValue);
+      }
+    })();
+  }, [debouncedValue, preserveConfig, formState]);
+
+  return children;
+};
 export const AuthenticatedUser: React.FC<{}> = () => {
   const { searchForAssets, exportAssets } = useFigma();
   const [searchResults, setSearchResults] = useState<any[] | undefined>();
   const [selectedAssets, setSelectedAssets] = useState<Record<string, any>>({});
   const [status, setStatus] = useState<string>();
-  const { error, toast, preserveConfig, getPreservedConfig } =
-    useMessengerActions();
+  const { error, toast, getPreservedConfig } = useMessengerActions();
 
   const [intialValues, setInitialValues] = useState<FormValues>({
     isAssetsContainerExport: true,
@@ -67,7 +87,6 @@ export const AuthenticatedUser: React.FC<{}> = () => {
         fileId: values.fileId,
       });
       setStatus("idle");
-      preserveConfig(values);
       if (!data.length) {
         toast("No assets found!");
       }
@@ -109,12 +128,13 @@ export const AuthenticatedUser: React.FC<{}> = () => {
       if (err.response) {
         return error(err.response.data.err);
       }
-      error("Something went wrong while exporing your assets!");
+      error("Something went wrong while exporting your assets!");
     }
   };
 
   useEffect(() => {
     (async () => {
+      // load cached config
       const config = await getPreservedConfig();
       if (config) setInitialValues(config);
     })();
@@ -132,7 +152,7 @@ export const AuthenticatedUser: React.FC<{}> = () => {
           subscription={{ values: true }}
           render={({ handleSubmit, values }) => {
             return (
-              <>
+              <CacheForm>
                 <TopBar />
                 <Field
                   validate={composeValidators(required)}
@@ -307,7 +327,7 @@ export const AuthenticatedUser: React.FC<{}> = () => {
                     </VSCodeButton>
                   </div>
                 </form>
-              </>
+              </CacheForm>
             );
           }}
         ></Form>

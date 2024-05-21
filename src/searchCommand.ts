@@ -4,10 +4,13 @@ import {
   QuickPickItem,
   window,
   Disposable,
+  commands,
 } from "vscode";
 import { Figma } from "./figma";
 import { Services } from "./services";
 import { debounce } from "./utils/debounce";
+import { Config } from "cosmiconfig/dist/types";
+import { EXTENSION_ID } from "./constants";
 
 export class AssetsSearch {
   private quickPick: QuickPick<QuickPickItem>;
@@ -15,9 +18,14 @@ export class AssetsSearch {
   //@ts-expect-error
   private figma: Figma;
   private services: Services;
-  private selectedIcon: any;
+  private selectedIcons: any[] = [];
   private selectedFormat: string = "";
   private selectedExportPath: string = "";
+  //@ts-expect-error
+  private storage: {
+    config: Config;
+    token: string;
+  } = {};
 
   private disposables: Disposable[] = [];
 
@@ -30,29 +38,44 @@ export class AssetsSearch {
     this.services = new Services(context);
 
     this.quickPick = window.createQuickPick();
-    this.quickPick.placeholder = "Search for an asset";
-    this.quickPick.title = "Search for an asset";
+    this.quickPick.placeholder = "Search for assets";
+    this.quickPick.title = "Assets Search";
     this.quickPick.totalSteps = 3;
     this.quickPick.step = 1;
+    this.quickPick.canSelectMany = true;
+    this.quickPick.ignoreFocusOut = true;
 
     // intial search events
     this.disposables = [
       this.quickPick.onDidChangeValue(debounce(this.search.bind(this), 300)),
       this.quickPick.onDidChangeSelection((selection) => {
-        this.selectedIcon = {
-          name: selection[0].label,
-          id: selection[0].description,
-        };
-        this.handleNextStep();
+        if (selection.length) {
+          const items = selection.map((item) => ({
+            name: item.label,
+            id: item.description,
+          }));
+          this.selectedIcons = items;
+        } else {
+          this.selectedIcons = [];
+        }
+      }),
+      this.quickPick.onDidAccept(() => {
+        if (this.selectedIcons.length) {
+          this.handleNextStep();
+          this.quickPick.canSelectMany = false;
+        } else {
+          window.showInformationMessage(
+            "Please select at least one asset before continuing."
+          );
+        }
       }),
     ];
-    this.quickPick.show();
   }
 
   private async export() {
-    this.quickPick.title = "Select export path";
+    this.quickPick.title = "Export Path";
     this.quickPick.placeholder = "./assets/icons";
-    const config = await this.services.getPreservedConfig();
+    const config = this.storage.config;
     this.quickPick.value = config?.exportPath || "";
 
     this.disposables.push(
@@ -61,31 +84,70 @@ export class AssetsSearch {
           this.quickPick.items = [
             {
               label: value,
-              description: "Export to the spicified path",
+              description: "Export to this path",
             },
           ];
         }
       }),
-      this.quickPick.onDidChangeSelection(async (selection) => {
+      this.quickPick.onDidChangeSelection((selection) => {
         this.selectedExportPath = selection[0].label;
-        this.quickPick.busy = true;
-        await this.figma.exportAssets(
-          [this.selectedIcon],
-          this.selectedFormat,
-          this.selectedExportPath
-        );
-        this.quickPick.busy = false;
-        window.showInformationMessage("Your icon have been exported!");
-        this.quickPick.dispose();
-        this.quickPick.hide();
+        if (selection[0].label) {
+          this.handleExportAssets();
+        }
       })
     );
+  }
+
+  private async handleExportAssets() {
+    try {
+      this.quickPick.busy = true;
+      this.quickPick.enabled = false;
+      await this.figma.exportAssets(
+        this.selectedIcons,
+        this.selectedFormat,
+        this.selectedExportPath
+      );
+      this.quickPick.enabled = true;
+      this.quickPick.busy = false;
+      window.showInformationMessage(
+        "Your assets have been successfully exported!"
+      );
+      this.quickPick.dispose();
+      this.quickPick.hide();
+    } catch (err) {
+      this.quickPick.busy = false;
+      window
+        .showErrorMessage(
+          "There was an issue with exporting your assets. Please try again.",
+          "Try Again"
+        )
+        .then((res) => {
+          if (res === "Try Again") {
+            this.handleExportAssets();
+          }
+        });
+      throw err;
+    }
   }
 
   public async init() {
     const config = await this.services.getPreservedConfig();
     const token = await this.services.getToken();
-    if (config && token) {
+    if (!token) {
+      return window
+        .showInformationMessage(
+          "To use this feature, please authenticate with your Figma token.",
+          "Add Token"
+        )
+        .then((res) => {
+          if (res === "Add Token") {
+            commands.executeCommand(`workbench.view.extension.${EXTENSION_ID}`);
+          }
+        });
+    }
+    if (config && config.pageName && config.fileId && token) {
+      this.quickPick.show();
+      this.storage.config = config;
       this.figma = new Figma({
         fileId: config.fileId,
         path: config.exportPath,
@@ -94,6 +156,18 @@ export class AssetsSearch {
         scale: +config.exportScale,
         token: token,
       });
+    } else {
+      this.quickPick.dispose();
+      window
+        .showInformationMessage(
+          "Please configure your Figma file settings first.",
+          "Add Configuration"
+        )
+        .then((res) => {
+          if (res === "Add Configuration") {
+            commands.executeCommand(`workbench.view.extension.${EXTENSION_ID}`);
+          }
+        });
     }
   }
 
@@ -102,13 +176,12 @@ export class AssetsSearch {
   }
 
   private async selectFormat() {
-    const config = await this.services.getPreservedConfig();
-
-    this.quickPick.title = "Select export format";
+    this.quickPick.title = "Export Format";
+    this.quickPick.placeholder = "Search for an export format";
 
     const formats: QuickPickItem[] = this.FORMATS.map((format) => ({
       label: format,
-      picked: config?.exportFormat === format,
+      picked: this.storage.config?.exportFormat === format,
     }));
     this.quickPick.items = formats;
 
@@ -132,23 +205,21 @@ export class AssetsSearch {
   }
 
   private async search(value: string) {
-    const token = await this.services.getToken();
-    const config = await this.services.getPreservedConfig();
-
-    if (!config || !token) {
-      return window.showErrorMessage(
-        "Please make sure to add your figma cofiguration"
-      );
-    }
     if (!value) {
       return;
     }
-
-    this.quickPick.busy = true;
-    const results = await this.figma.search(value);
-    this.quickPick.busy = false;
-    const items = this.convertToQuickPickItems(results);
-    this.quickPick.items = items;
+    try {
+      this.quickPick.busy = true;
+      const results = await this.figma.search(value);
+      this.quickPick.busy = false;
+      const items = this.convertToQuickPickItems(results);
+      this.quickPick.items = items;
+    } catch (err) {
+      window.showInformationMessage(
+        "No assets found. Please verify your configuration settings."
+      );
+      this.quickPick.busy = false;
+    }
   }
   private convertToQuickPickItems(figmaNodes: any[]): QuickPickItem[] {
     return figmaNodes.map((item) => ({

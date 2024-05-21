@@ -38,10 +38,17 @@ export class MessengerProvider extends Services {
     this.messenger.onRequest(
       NOTIFICATION_TYPES["exportAssets"],
       async ({ assets, config }: { assets: any[]; config: FigmaConfig }) => {
-        const figma = new Figma(config);
-        await figma.exportAssets(assets!);
-        window.showInformationMessage("Your assets have been exported!");
-        return true;
+        try {
+          const figma = new Figma(config);
+          await figma.exportAssets(assets!);
+          window.showInformationMessage(
+            "Your assets have been successfully exported!"
+          );
+          return true;
+        } catch (err) {
+          this.outputChannel.appendLine(JSON.stringify(err));
+          throw err;
+        }
       }
     );
     this.messenger.onNotification(
